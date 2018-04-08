@@ -830,6 +830,7 @@ _BSort:
 	#khoi tao bien dem
 	li $t0, -1 #i = -1
 	addi $a2, $a2, -1#n = n - 1 
+	beq $t0, $a2, _BSort.KetThuc # n = -1 (sau khi -) va i = -1
 _BSort.LapI:
 	addi $t0, $t0, 1 #i++
 	beq $t0, $a2, _BSort.KetThuc #kiem tra i < n - 1
