@@ -11,6 +11,7 @@
 	tbTBCSoDX: .asciiz "Trung binh cong cac so doi xung: "
 	tbMax: .asciiz "Gia tri lon nhat: "
 	tbSXTang: .asciiz "Mang sap xep tang: "
+	tbSXGiam: .asciiz "Mang sap xep giam: "
 	endl: .asciiz "\n"
 	n: .word 0
 	arr: .space 4000
@@ -39,7 +40,7 @@ XuatMenu:
 	beq $t0, 6, _Func_TBCSoDX
 	beq $t0, 7, _Func_TimMax
 	beq $t0, 8, _Func_SSort
-	#beq $t0, 9, SortGiam
+	beq $t0, 9, _Func_BSort
 	beq $t0, 10, Thoat
 	j NhapSai
 
@@ -252,23 +253,20 @@ _LietKeNT.KetThuc:
 _KTNT:
 	#Khai bao kich thuoc stack
 	addi $sp,$sp,-12
-	
 	#Backup thanh ghi
 	sw $ra,($sp)
 	sw $t0,4($sp)
 	sw $t1,8($sp)
-
-#Than thu tuc:
 	#khoi tao vong lap
 	li $v0,	1 # v0 = 0
 	li $t0, 2 # i = 2
+#Than thu tuc:
 _KTNT.Lap:
 	slt $t1, $a0, $t0
 	beq $t1, 1, _KTNT.Return0
 	beq $t0, $a0, _KTNT.KetThuc
 	div $a0,$t0
 	mfhi $t1
-	
 	#Kiem tra phan du
 	beq $t1,0,_KTNT.Return0
 	addi $t0,$t0,1
@@ -311,7 +309,6 @@ _LietKeHT:
 	li $v0, 4
 	la $a0, tbXuatSoHT
 	syscall
-
 	#khoi tao vong lap
 	li $t0, 0 # i = 0
 _LietKeHT.Lap: 
@@ -329,7 +326,6 @@ _LietKeHT.Lap:
 	
 	j _LietKeHT.Lap
 _LietKeHT.Xuat:
-	
 	li $v0, 1
 	syscall
 	#Xuat dau cach
@@ -341,7 +337,6 @@ _LietKeHT.Xuat:
 	#Tang dia chi mang
 	addi $a1,$a1,4
 	j _LietKeHT.Lap
-
 _LietKeHT.KetThuc:
 	#Restor thanh ghi
 	lw $ra,($sp)
@@ -362,15 +357,16 @@ _KTHT:
 	sw $s0, 12($sp)
 #Than thu tuc:
 	#khoi tao vong lap
-	li $t0, 0 # i = 0
-	li $s0, 0 # s = 0
+	li $t0, 1 # i = 1
+	li $s0, 1 # s = 1
 	li $v0, 0
-	beq $a0, 0, _KTHT.KetThuc #Neu n = 0
+	slt $t1, $a0, $t0
+	beq $t1, 1, _KTHT.KetThuc #Neu n < 1
 _KTHT.Lap:
 	addi $t0, $t0, 1
 	#kiem tra i = n
 	beq $t0, $a0, _KTHT.KiemTra
-	
+	#kiem tra chia het
 	div $a0,$t0
 	mfhi $t1	
 	#Kiem tra phan du
@@ -384,9 +380,7 @@ _KTHT.Return1:
 	j _KTHT.KetThuc
 _KTHT.KiemTra:
 	beq $s0, $a0, _KTHT.Return1
-
 _KTHT.KetThuc:
-	
 	#Restor thanh ghi
 	lw $ra,($sp)
 	lw $t0,4($sp)
@@ -703,6 +697,7 @@ _TimMax.KetThuc:
 	jr $ra
 #----------------------------------------------------------------------------------
 #8. 
+# Ham tim min
 _TimMin:
 	#Khai bao kich thuoc stack
 	addi $sp,$sp,-28
@@ -751,6 +746,7 @@ _TimMin.KetThuc:
 	#Nhay ve dia chi goi ham
 	jr $ra
 #----------------------------------------------------------------------------------
+#8. Sap xep mang tang theo Selection Sort -----------------------------------------
 _Func_SSort:
 	la $a1, arr
 	lw $a2, n
@@ -805,3 +801,69 @@ _SSort.KetThuc:
 	jr $ra
 
 #----------------------------------------------------------------------------------
+#9. Sap xep mang giam theo Bubble Sort --------------------------------------------
+_Func_BSort:
+	la $a1, arr
+	lw $a2, n
+	jal _BSort
+	#xuat tb
+	li $v0, 4
+	la $a0, tbSXGiam
+	syscall
+	
+	la $a1, arr
+	lw $a2, n
+	jal _XuatMang
+	j XuatMenu
+_BSort:
+	#khai bao kich thuoc stack
+	addi $sp,$sp,-36
+	#backup thanh ghi
+	sw $ra,($sp)
+	sw $t0,8($sp)
+	sw $t1,12($sp)
+	sw $t2, 16($sp)
+	sw $t3, 20($sp)
+	sw $t4, 24($sp)
+	sw $s0, 28($sp)
+	sw $s1, 32($sp)
+	#khoi tao bien dem
+	li $t0, -1 #i = -1
+	addi $a2, $a2, -1#n = n - 1 
+_BSort.LapI:
+	addi $t0, $t0, 1 #i++
+	beq $t0, $a2, _BSort.KetThuc #kiem tra i < n - 1
+	li $t1, 0 #gan j = 0
+	sub $s1, $a2, $t0 #m = n - 1 - i
+	move $s0, $a1 #a[j]
+	_BSort.LapJ:
+		beq $t1, $s1, _BSort.LapI #kiem tra j < m
+		lw $t2, ($s0) #a[j]
+		lw $t3, 4($s0)#a[j+1]
+		slt $t4, $t2, $t3
+		beq $t4, 1, _BSort.swap 		
+		#tang i
+		addi $t1, $t1, 1
+		addi $s0, $s0, 4
+		j _BSort.LapJ
+	_BSort.swap:
+		sw $t3, ($s0)
+		sw $t2, 4($s0)
+		#tang i
+		addi $t1, $t1, 1
+		addi $s0, $s0, 4
+		j _BSort.LapJ
+_BSort.KetThuc:
+	#Restore thanh ghi
+	lw $ra,($sp)
+	lw $t0,8($sp)
+	lw $t1,12($sp)
+	lw $t2, 16($sp)
+	lw $t3, 20($sp)
+	lw $t4, 24($sp)
+	lw $s0, 28($sp)
+	lw $s1, 32($sp)
+	#khai bao kich thuoc stack
+	addi $sp, $sp, 36
+	#Nhay ve dia chi goi ham
+	jr $ra
