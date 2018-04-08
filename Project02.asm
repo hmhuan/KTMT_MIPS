@@ -10,9 +10,10 @@
 	tbTongCP: .asciiz "Tong cac so chinh phuong: "
 	tbTBCSoDX: .asciiz "Trung binh cong cac so doi xung: "
 	tbMax: .asciiz "Gia tri lon nhat: "
+	tbSXTang: .asciiz "Mang sap xep tang: "
 	endl: .asciiz "\n"
 	n: .word 0
-	arr: .space 400
+	arr: .space 4000
 .text
 	.globl main
 main:
@@ -37,7 +38,7 @@ XuatMenu:
 	beq $t0, 5, _Func_TongCP
 	beq $t0, 6, _Func_TBCSoDX
 	beq $t0, 7, _Func_TimMax
-	#beq $t0, 8, SortTang
+	beq $t0, 8, _Func_SSort
 	#beq $t0, 9, SortGiam
 	beq $t0, 10, Thoat
 	j NhapSai
@@ -127,6 +128,12 @@ _NhapMang.KetThuc:
 #----------------------------------------------------------------------------------
 #2. Ham Xuat Mang -----------------------------------------------------------------
 _Func_XuatMang:
+	
+	#Xuat tb4
+	li $v0,4
+	la $a0,tbXuatMang
+	syscall
+	
 	la $a1, arr
 	lw $a2, n
 	jal _XuatMang
@@ -141,10 +148,6 @@ _XuatMang:
 	#Backup thanh ghi
 	sw $ra,($sp)
 	sw $t0,4($sp)
-	#Xuat tb4
-	li $v0,4
-	la $a0,tbXuatMang
-	syscall
 	#khoi tao vong lap
 	li $t0, 0 # i = 0
 	
@@ -348,23 +351,23 @@ _LietKeHT.KetThuc:
 	#Nhay ve dia chi goi ham
 	jr $ra
 #Ham kiem tra so hoan thien
-#dau thu tuc
 _KTHT:
 	#Khai bao kich thuoc stack
 	addi $sp,$sp,-16
 	
 	#Backup thanh ghi
-	sw $ra, ($sp)
-	sw $t0, 4($sp)
-	sw $t1, 8($sp)
+	sw $ra,($sp)
+	sw $t0,4($sp)
+	sw $t1,8($sp)
 	sw $s0, 12($sp)
 #Than thu tuc:
 	#khoi tao vong lap
-	li $t0, 1 # i = 1
+	li $t0, 0 # i = 0
 	li $s0, 0 # s = 0
 	li $v0, 0
-_KTHT.Lap:
 	beq $a0, 0, _KTHT.KetThuc #Neu n = 0
+_KTHT.Lap:
+	addi $t0, $t0, 1
 	#kiem tra i = n
 	beq $t0, $a0, _KTHT.KiemTra
 	
@@ -372,19 +375,16 @@ _KTHT.Lap:
 	mfhi $t1	
 	#Kiem tra phan du
 	beq $t1,0,_KTHT.TangS
-	#Tang i
-	addi $t0, $t0, 1
 	j _KTHT.Lap
 _KTHT.TangS:
 	add $s0, $s0, $t0
-	#Tang i
-	addi $t0, $t0, 1
 	j _KTHT.Lap
 _KTHT.Return1:
 	li $v0, 1
 	j _KTHT.KetThuc
 _KTHT.KiemTra:
 	beq $s0, $a0, _KTHT.Return1
+
 _KTHT.KetThuc:
 	
 	#Restor thanh ghi
@@ -394,6 +394,7 @@ _KTHT.KetThuc:
 	lw $s0, 12($sp)
 	#Xoa stack
 	addi $sp,$sp,16
+
 	#Nhay ve dia chi goi ham
 	jr $ra
 #----------------------------------------------------------------------------------
@@ -700,4 +701,107 @@ _TimMax.KetThuc:
 	addi $sp,$sp,24
 	#Nhay ve dia chi goi ham
 	jr $ra
+#----------------------------------------------------------------------------------
+#8. 
+_TimMin:
+	#Khai bao kich thuoc stack
+	addi $sp,$sp,-28
+	
+	#Backup thanh ghi
+	sw $ra,($sp)
+	sw $t0,8($sp)
+	sw $t1,12($sp)
+	sw $t2, 16($sp)
+	sw $s0, 20($sp)
+	sw $s1, 24($sp)
+	
+	li $t0, 0 # i = 0
+	lw $t1, ($a1) #min tam
+	move $s1, $a1
+_TimMin.Lap:
+	beq $t0, $a0, _TimMin.KetThuc
+	lw $s0, ($a3) #s = a[i]
+	slt $t2, $s0, $t1 #neu a[i] < min
+	beq $t2, 1, _TimMin.Gan #gan min = a[i]
+	#Tang bien dem len va kiem tra i < n
+	addi $t0,$t0,1
+	#Tang dia chi mang
+	addi $a3,$a3,4
+	j _TimMin.Lap
+_TimMin.Gan:
+	add $t1, $s0, $0
+	move $s1, $a3
+	#Tang bien dem len va kiem tra i < n
+	addi $t0,$t0,1
+	#Tang dia chi mang
+	addi $a3,$a3,4
+	j _TimMin.Lap
+_TimMin.KetThuc:
+	#xuat min
+	move $v0, $s1
+
+	lw $ra,($sp)
+	lw $t0,8($sp)
+	lw $t1,12($sp)
+	lw $t2, 16($sp)
+	lw $s0, 20($sp)
+	lw $s1, 24($sp)
+	#Xoa stack
+	addi $sp,$sp,28
+	#Nhay ve dia chi goi ham
+	jr $ra
+#----------------------------------------------------------------------------------
+_Func_SSort:
+	la $a1, arr
+	lw $a2, n
+	jal _SSort
+	#xuat tb
+	li $v0, 4
+	la $a0, tbSXTang
+	syscall
+	
+	la $a1, arr
+	lw $a2, n
+	jal _XuatMang
+	j XuatMenu
+_SSort:
+	#khai bao kich thuoc stack
+	addi $sp,$sp,-28
+	#backup thanh ghi
+	sw $ra,($sp)
+	sw $t0,8($sp)
+	sw $t1,12($sp)
+	sw $t2, 16($sp)
+	sw $s0, 20($sp)
+	sw $s1, 24($sp)
+	#khoi tao bien dem
+	li $t0, 0 #i = 0
+	move $a0, $a2 #gan a0 = n
+_SSort.Lap:
+	beq $t0, $a2, _SSort.KetThuc
+	move $a3, $a1
+	jal _TimMin
+	#swap	
+	lw $t1, ($v0)
+	lw $t2, ($a1)
+	sw $t1, ($a1)
+	sw $t2, ($v0)
+	#tang i
+	addi $t0, $t0, 1
+	addi $a1, $a1, 4
+	addi $a0, $a0, -1
+	j _SSort.Lap
+_SSort.KetThuc:
+	#Restore thanh ghi
+	lw $ra,($sp)
+	lw $t0,8($sp)
+	lw $t1,12($sp)
+	lw $t2, 16($sp)
+	lw $s0, 20($sp)
+	lw $s1, 24($sp)
+	#khai bao kich thuoc stack
+	addi $sp,$sp,28
+	#Nhay ve dia chi goi ham
+	jr $ra
+
 #----------------------------------------------------------------------------------
