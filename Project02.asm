@@ -396,7 +396,11 @@ _KTHT.Return1:
 	li $v0, 1
 	j _KTHT.KetThuc
 _KTHT.KiemTra:
-	div $s0, $s0, 2
+	li $t0, 2
+	div $s0, $t0
+	mflo $s0
+	mfhi $t1
+	beq $t1, 1, _KTHT.KetThuc
 	beq $s0, $a0, _KTHT.Return1
 _KTHT.KetThuc:
 	#Restor thanh ghi
