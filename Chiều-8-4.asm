@@ -425,9 +425,12 @@ _KTHT.Return1:
 	j _KTHT.KetThuc
 	
 _KTHT.KiemTra:
-	div $s0, $s0, 2
+	li $t0, 2
+	div $s0, $t0
+	mflo $s0
+	mfhi $t1
+	beq $t1, 1, _KTHT.KetThuc
 	beq $s0, $a0, _KTHT.Return1
-	
 _KTHT.KetThuc:
 	lw $ra,($sp)
 	lw $t0,4($sp)
@@ -936,7 +939,7 @@ _BSort:
 	sw $s0, 28($sp)
 	sw $s1, 32($sp)
 	
-	beq $a2, 0, _BSort.KetThuc #kiem tra n=0 thì k?t thúc
+	beq $a2, 0, _BSort.KetThuc #kiem tra n=0 thÃ¬ k?t thÃºc
 	
 	#khoi tao bien dem
 	li $t0, -1 #i = -1
@@ -987,7 +990,7 @@ _BSort.KetThuc:
 	jr $ra
 	
 #----------------------------------------------------------------------------
-#10. ham thoát---------------------------------------------------------------
+#10. ham thoÃ¡t---------------------------------------------------------------
 _Func_Thoat:
 	#ket thuc chuong trinh
 	li $v0, 10
