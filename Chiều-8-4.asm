@@ -371,7 +371,7 @@ _LietKeHT.KetThuc:
 	
 #Ham kiem tra so hoan thien
 #Tham so: $a0
-#Gia tri tra ve: $v0 ($v0 = 1 thi $a0 la sht, $v0 = 0 thi $a0 ko la snt)
+#Gia tri tra ve: $v0 ($v0 = 1 thi $a0 la so hoan thien, $v0 = 0 thi $a0 khong la so hoan thien)
 _KTHT:
 	addi $sp,$sp,-20
 	sw $ra,($sp)
