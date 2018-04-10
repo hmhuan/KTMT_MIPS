@@ -252,20 +252,27 @@ _LietKeNT.KetThuc:
 #dau thu tuc
 _KTNT:
 	#Khai bao kich thuoc stack
-	addi $sp,$sp,-12
+	addi $sp,$sp,-16
+	
 	#Backup thanh ghi
 	sw $ra,($sp)
 	sw $t0,4($sp)
 	sw $t1,8($sp)
+	sw $s0, 12($sp)
+#Than thu tuc:
 	#khoi tao vong lap
 	li $v0,	1 # v0 = 0
 	li $t0, 2 # i = 2
-#Than thu tuc:
+	
 _KTNT.Lap:
 	slt $t1, $a0, $t0
 	beq $t1, 1, _KTNT.Return0
 	beq $t0, $a0, _KTNT.KetThuc
 	div $a0,$t0
+	mfhi $t1
+	mflo $s0
+	slt $t1, $s0, $t0
+	beq $t1, 1, _KTNT.KetThuc
 	mfhi $t1
 	#Kiem tra phan du
 	beq $t1,0,_KTNT.Return0
@@ -273,16 +280,14 @@ _KTNT.Lap:
 	j _KTNT.Lap
 _KTNT.Return0:
 	li $v0,0
-
 _KTNT.KetThuc:
 	#Restor thanh ghi
 	lw $ra,($sp)
 	lw $t0,4($sp)
 	lw $t1,8($sp)
-
+	lw $s0, 12($sp)
 	#Xoa stack
-	addi $sp,$sp,12
-
+	addi $sp,$sp,16
 	#Nhay ve dia chi goi ham
 	jr $ra
 
@@ -348,35 +353,42 @@ _LietKeHT.KetThuc:
 #Ham kiem tra so hoan thien
 _KTHT:
 	#Khai bao kich thuoc stack
-	addi $sp,$sp,-16
+	addi $sp,$sp,-20
 	
 	#Backup thanh ghi
 	sw $ra,($sp)
 	sw $t0,4($sp)
 	sw $t1,8($sp)
 	sw $s0, 12($sp)
+	sw $s1, 16 ($sp)
 #Than thu tuc:
 	#khoi tao vong lap
-	li $t0, 0 # i = 0
+	li $t0, 1 # i = 0
 	li $s0, 0 # s = 0
 	li $v0, 0
-	#Neu n <= 0 thi ket thuc
-	beq $a0, $t0, _KTHT.KetThuc
-	slt $t1, $a0, $t0
-	beq $t1, 1, _KTHT.KetThuc 
+	#Neu n <= 0 thi thoat
+	beq $a0, 0, _KTHT.KetThuc
+	slt $t1, $a0, $v0
+	beq $t1, 1, _KTHT.KetThuc
 _KTHT.Lap:
 	#kiem tra i = n
 	beq $t0, $a0, _KTHT.KiemTra
 	#kiem tra chia het
 	div $a0,$t0
-	mfhi $t1	
+	mfhi $t1
+	mflo $s1	
+	slt $t1, $s1, $t0
+	beq $t1, 1, _KTHT.KiemTra
+	mfhi $t1 # gan lai du
 	#Kiem tra phan du
 	beq $t1,0,_KTHT.TangS
 	#Tang i
 	addi $t0, $t0, 1
 	j _KTHT.Lap
 _KTHT.TangS:
-	add $s0, $s0, $t0
+	# n = a*b 
+	add $s0, $s0, $t0 # s += a
+	add $s0, $s0, $s1 # s += b
 	#Tang i
 	addi $t0, $t0, 1
 	j _KTHT.Lap
@@ -384,6 +396,7 @@ _KTHT.Return1:
 	li $v0, 1
 	j _KTHT.KetThuc
 _KTHT.KiemTra:
+	div $s0, $s0, 2
 	beq $s0, $a0, _KTHT.Return1
 _KTHT.KetThuc:
 	#Restor thanh ghi
@@ -391,9 +404,9 @@ _KTHT.KetThuc:
 	lw $t0,4($sp)
 	lw $t1,8($sp)
 	lw $s0, 12($sp)
+	lw $s1, 16 ($sp)
 	#Xoa stack
-	addi $sp,$sp,16
-
+	addi $sp,$sp, 20
 	#Nhay ve dia chi goi ham
 	jr $ra
 #----------------------------------------------------------------------------------
