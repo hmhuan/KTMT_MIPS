@@ -260,7 +260,7 @@ _LietKeNT.KetThuc:
 	
 #Ham KTNT----------------------------------------------------------------
 #Tham so: $a0
-#Gia tri tra ve: $v0($v0 = 0 la khong phai so nguyen to, $v0 = 1 la so nguyen to)
+#Gia tri tra ve: $v0($v0 = 0 la khong phai snt, $v0 = 1 la snt)
 _KTNT:
 	#Khai bao kich thuoc stack
 	addi $sp,$sp,-12
@@ -371,8 +371,7 @@ _LietKeHT.KetThuc:
 	
 #Ham kiem tra so hoan thien
 #Tham so: $a0
-#Gia tri tra ve: $v0 
-#($v0 = 1 thi $a0 la so hoan thien, $v0 = 0 thi $a0 khong la so hoan thien)
+#Gia tri tra ve: $v0 ($v0 = 1 thi $a0 la sht, $v0 = 0 thi $a0 ko la snt)
 _KTHT:
 	addi $sp,$sp,-20
 	sw $ra,($sp)
@@ -521,8 +520,7 @@ _TongSoCP.KetThuc:
 
 #Ham kiem tra so chinh phuong.
 #Tham so: $a0
-#Gia tri tra ve: $v0 
-#($v0 = 1 la so chinh phuong, $v0 = 0 khong la so chinh phuong)
+#Gia tri tra ve: $v0 ($v0 = 1 la scp, $v0 = 0 ko la scp)
 _KTCP:
 	addi $sp,$sp,-16
 	sw $ra,($sp)
@@ -657,9 +655,8 @@ _TBCSoDX.KetThuc:
 
 #Ham kiem tra so doi xung
 #Tham so: $a0, 
-#Gia tri tra ve: $v0 
-#($v0 = 1 la so doi xung, $v0 = 0 khong la so doi xung) 
-_KTDX:		                                      
+#Gia tri tra ve: $v0 ($v0 = 1 la so dx, $v0 = 0 ko la so dx) 
+_KTDX:		
 	addi $sp,$sp,-20
 	sw $ra,($sp)
 	sw $s1,4($sp)
@@ -784,7 +781,7 @@ _TimMax.KetThuc:
 	
 #----------------------------------------------------------------------------------
 #8. Ham tim min
-#Tham so: $a1 = array, $a2 = n
+#Tham so: $a1 = array, $a0 = n
 #Gia tri tra ve: min mang la $v0
 _TimMin:
 	addi $sp,$sp,-28
