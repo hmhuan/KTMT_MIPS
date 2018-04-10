@@ -61,7 +61,9 @@ _Func_NhapMang:
 	sw $v0, n	
 	j XuatMenu
 
-#Ham nhap mang, tham so la $a1 = array, $v0 = n...
+#Ham nhap mang
+#Tham so la $a1 = array, $v0 = n
+#Ham khong co gia tri tra ve
 _NhapMang:
 	#Khai bao kich thuoc stack
 	addi $sp,$sp,-12
@@ -143,7 +145,9 @@ _Func_XuatMang:
 		
 	j XuatMenu
 
-#Ham xuat mang, tham so la $a1 = array, $a2 = n
+#Mo ta ham: Ham xuat mang
+#Tham so la $a1 = array, $a2 = n
+#Gia tri tra ve: khong co
 _XuatMang:
 	addi $sp,$sp,-8
 	sw $ra,($sp)
@@ -196,7 +200,9 @@ _Func_LietKeNT:
 	syscall
 	j XuatMenu
 	
-#Ham liet_ke_nguyen_to tham so truyen vao la $a1 = array, $a2 = n
+#Ham liet_ke_nguyen_to 
+#Tham so truyen vao la $a1 = array, $a2 = n
+#Gia tri tra ve: khong co
 _LietKeNT:
 	#Khai bao kich thuoc stack
 	addi $sp,$sp,-8
@@ -253,7 +259,8 @@ _LietKeNT.KetThuc:
 	jr $ra
 	
 #Ham KTNT----------------------------------------------------------------
-#Ham co tham so la $a0, tra ve gia tri $v0($v0 = 0 la khong phai snt, $v0 = 1 la snt)
+#Tham so: $a0
+#Gia tri tra ve: $v0($v0 = 0 la khong phai snt, $v0 = 1 la snt)
 _KTNT:
 	#Khai bao kich thuoc stack
 	addi $sp,$sp,-12
@@ -306,7 +313,9 @@ _Func_LietKeHT:
 	
 	j XuatMenu
 	
-#Ham Liet_ke_hoan_chinh. Tham so la $a1 = array, $a2 = n
+#Ham Liet_ke_hoan_chinh
+#Tham so la $a1 = array, $a2 = n
+#Gia tri tra ve: khong co
 _LietKeHT:
 	addi $sp,$sp,-8
 	sw $ra, ($sp)
@@ -361,7 +370,8 @@ _LietKeHT.KetThuc:
 	jr $ra
 	
 #Ham kiem tra so hoan thien
-#Ham nhan tham so la $a0, tra ve $v0 ($v0 = 1 thi $a0 la sht, $v0 = 0 thi $a0 ko la snt)
+#Ham nhan tham so la $a0
+#Gia tri tra ve: $v0 ($v0 = 1 thi $a0 la sht, $v0 = 0 thi $a0 ko la snt)
 _KTHT:
 	addi $sp,$sp,-20
 	sw $ra,($sp)
@@ -447,7 +457,8 @@ _Func_TongCP:
 	j XuatMenu
 
 #Ham tinh tong cac so chinh phuong (In ra tong so chinh phuong trong mang)
-#Tham so la $a1 = array, $a2 = n. Khong co kieu tra ve ----------------------------
+#Tham so la $a1 = array, $a2 = n
+#Gia tri tra ve: Khong co ----------------------------
 _TongSoCP:
 	addi $sp,$sp,-16
 	sw $ra, ($sp)
@@ -508,7 +519,8 @@ _TongSoCP.KetThuc:
 	jr $ra
 
 #Ham kiem tra so chinh phuong.
-#Tham so ham la $a0. Tra ve gia tri $v0 ($v0 = 1 la scp, $v0 = 0 ko la scp)
+#Tham so ham la $a0
+#Gia tri tra ve: $v0 ($v0 = 1 la scp, $v0 = 0 ko la scp)
 _KTCP:
 	addi $sp,$sp,-16
 	sw $ra,($sp)
@@ -566,7 +578,8 @@ _Func_TBCSoDX:
 	j XuatMenu
 	
 #Ham tinh TBC so dx
-#Tham so truyen vao la $a1 = array, $a2 = n. Ham xuat ra TBC cua cac so dx
+#Tham so truyen vao la $a1 = array, $a2 = n
+#Gia tri tra ve: khong co.
 _TBCSoDX:
 	addi $sp,$sp,-20
 	sw $ra, ($sp)
@@ -641,7 +654,8 @@ _TBCSoDX.KetThuc:
 	jr $ra
 
 #Ham kiem tra so doi xung
-#Ham nhan tham so la $a0, tra ve $v0 ($v0 = 1 la so dx, $v0 = 0 ko la so dx) 
+#Ham nhan tham so la $a0, 
+#Gia tri tra ve: $v0 ($v0 = 1 la so dx, $v0 = 0 ko la so dx) 
 _KTDX:		
 	addi $sp,$sp,-20
 	sw $ra,($sp)
@@ -705,8 +719,9 @@ _Func_TimMax:
 	
 	j XuatMenu
 	
-#Ham tim max, tham so truyen vao la $a1 = array, $a2 = n
-#Ham xuat ra max trong mang array
+#Ham tim max
+#Tham so truyen vao la $a1 = array, $a2 = n
+#Gia tri tra ve: Khong co
 _TimMax:
 	addi $sp,$sp,-24
 	sw $ra,($sp)
@@ -765,8 +780,9 @@ _TimMax.KetThuc:
 	jr $ra
 	
 #----------------------------------------------------------------------------------
-#8. Ham tim min, tham so ham la $a1 = array, $a2 = n
-#Ham tra ve min mang la $v0
+#8. Ham tim min
+#Tham so ham la $a1 = array, $a2 = n
+#Gia tri tra ve: min mang la $v0
 _TimMin:
 	addi $sp,$sp,-28
 	
@@ -842,7 +858,7 @@ _Func_SSort:
 	
 #Ham sap xep mang tang thep SSort.
 #Ham nhan tham so la $a1 = array, $a2 = n.
-#Ham khong co tra ve.
+#Gia tri tra ve: Khong co.
 _SSort:	
 	addi $sp,$sp,-28
 	sw $ra,($sp)
@@ -908,7 +924,7 @@ _Func_BSort:
 	
 #Ham sap xep mang giam dan theo BSort.
 #Tham so ham la $a1 = array, $a2 = n.
-#Ham khong co kieu tra ve.
+#Gia tri tra ve: Khong co.
 _BSort:
 	addi $sp,$sp,-36
 	sw $ra,($sp)
