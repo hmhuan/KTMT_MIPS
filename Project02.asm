@@ -357,13 +357,14 @@ _KTHT:
 	sw $s0, 12($sp)
 #Than thu tuc:
 	#khoi tao vong lap
-	li $t0, 1 # i = 1
-	li $s0, 1 # s = 1
+	li $t0, 0 # i = 0
+	li $s0, 0 # s = 0
 	li $v0, 0
+	#Neu n <= 0 thi ket thuc
+	beq $a0, $t0, _KTHT.KetThuc
 	slt $t1, $a0, $t0
-	beq $t1, 1, _KTHT.KetThuc #Neu n < 1
+	beq $t1, 1, _KTHT.KetThuc 
 _KTHT.Lap:
-	addi $t0, $t0, 1
 	#kiem tra i = n
 	beq $t0, $a0, _KTHT.KiemTra
 	#kiem tra chia het
@@ -371,9 +372,13 @@ _KTHT.Lap:
 	mfhi $t1	
 	#Kiem tra phan du
 	beq $t1,0,_KTHT.TangS
+	#Tang i
+	addi $t0, $t0, 1
 	j _KTHT.Lap
 _KTHT.TangS:
 	add $s0, $s0, $t0
+	#Tang i
+	addi $t0, $t0, 1
 	j _KTHT.Lap
 _KTHT.Return1:
 	li $v0, 1
