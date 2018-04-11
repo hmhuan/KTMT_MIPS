@@ -80,7 +80,9 @@ _NhapMang:
 	li $v0,5
 	syscall
 	move $s1, $v0
-	
+	#kiem tra n < 0
+	slt $t0, $s1, $0
+	beq $t0, 1, _NhapMang.KetThuc
 	#khoi tao vong lap
 	li $t0, 0 # i = 0
 	
@@ -152,7 +154,9 @@ _XuatMang:
 	addi $sp,$sp,-8
 	sw $ra,($sp)
 	sw $t0,4($sp)
-	
+	#kiem tra n < 0
+	slt $t0, $a2, $0
+	beq $t0, 1, _XuatMang.KetThuc
 	#khoi tao vong lap
 	li $t0, 0 # i = 0
 	
@@ -213,7 +217,9 @@ _LietKeNT:
 	li $v0, 4
 	la $a0, tbXuatSoNT
 	syscall
-
+	#kiem tra n < 0
+	slt $t0, $a2,  $0
+	beq $t0, 1, _LietKeNT.KetThuc
 	#khoi tao vong lap
 	li $t0, 0 # i = 0
 	
@@ -327,7 +333,9 @@ _LietKeHT:
 	li $v0, 4
 	la $a0, tbXuatSoHT
 	syscall
-	
+	#kiem tra n < 0
+	slt $t0, $a2,  $0
+	beq $t0, 1, _LietKeHT.KetThuc
 	#khoi tao vong lap
 	li $t0, 0 # i = 0
 	
@@ -476,7 +484,10 @@ _TongSoCP:
 	li $v0,4
 	la $a0,tbTongCP
 	syscall
-
+	#kiem tra n < 0
+	li $s0, 0 # s = 0
+	slt $t0, $a2,  $0
+	beq $t0, 1, _TongSoCP.KetThuc
 	#khoi tao vong lap
 	li $t0, 0 # i = 0
 	li $s0, 0 #tong s = 0
@@ -598,7 +609,10 @@ _TBCSoDX:
 	li $v0,4
 	la $a0,tbTBCSoDX
 	syscall
-
+	#kiem tra n < 0
+	li $s0, 0 # s = 0
+	slt $t0, $a2,  $0
+	beq $t0, 1, _TBCSoDX.KetThuc
 	#khoi tao vong lap
 	li $t0, 0 # i = 0
 	li $s0, 0 # s = 0
@@ -740,7 +754,11 @@ _TimMax:
 	li $v0,4
 	la $a0,tbMax
 	syscall
-	
+	#kiem tra n < 0
+	li $s0, 0 # s = 0
+	slt $t0, $a2,  $0
+	beq $t0, 1, _TimMax.KetThuc
+	#khoi tao vong lap
 	li $t0, 0 # i = 0
 	lw $t1, ($a1) #khoi tao Max tam la phan tu dau tien cua mang
 	
@@ -872,7 +890,9 @@ _SSort:
 	sw $t2, 12($sp)
 	sw $s0, 16($sp)
 	sw $s1, 20($sp)
-	
+	#kiem tra n < 0
+	slt $t0, $a2, $0
+	beq $t0, 1, _SSort.KetThuc
 	#khoi tao bien dem
 	li $t0, 0 #i = 0
 	move $a0, $a2 #gan a0 = n
@@ -939,9 +959,10 @@ _BSort:
 	sw $t4, 20($sp)
 	sw $s0, 24($sp)
 	sw $s1, 28($sp)
-	
-	beq $a2, 0, _BSort.KetThuc #kiem tra n=0 thì ket thúc
-	
+	#kiem tra n < 0
+	slt $t0, $a2, $0
+	beq $t0, 1, _BSort.KetThuc
+	beq $a2, 0 _BSort.KetThuc
 	#khoi tao bien dem
 	li $t0, -1 #i = -1
 	addi $a2, $a2, -1#n = n - 1 
@@ -992,7 +1013,7 @@ _BSort.KetThuc:
 	jr $ra
 	
 #----------------------------------------------------------------------------
-#10. ham thoát---------------------------------------------------------------
+#10. ham thoÃ¡t---------------------------------------------------------------
 _Func_Thoat:
 	#ket thuc chuong trinh
 	li $v0, 10
