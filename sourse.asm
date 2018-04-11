@@ -484,16 +484,17 @@ _TongSoCP:
 	li $v0,4
 	la $a0,tbTongCP
 	syscall
-	#kiem tra n < 0
+	#kiem tra n <= 0?
 	li $s0, 0 # s = 0
 	slt $t0, $a2,  $0
 	beq $t0, 1, _TongSoCP.KetThuc
+	beq $a2, 0, _TongSoCP.KetThuc
 	#khoi tao vong lap
 	li $t0, 0 # i = 0
 	li $s0, 0 #tong s = 0
 	
 _TongSoCP.Lap: 
-	beq $t0, $a2, _TongSoCP.KetThuc
+	beq $t0, $a2, _TongSoCP.XuatTongCP
 
 	lw $a0, ($a1)
 	jal _KTCP
@@ -521,12 +522,12 @@ _TongSoCP.Cong:
 	addi $a1,$a1,4
 	
 	j _TongSoCP.Lap
-
-_TongSoCP.KetThuc:
+_TongSoCP.XuatTongCP:
 	li $v0, 1
 	la $a0, ($s0)
 	syscall
-	
+_TongSoCP.KetThuc:
+	#Restore thanh ghi
 	lw $ra,($sp)
 	lw $t0, 4($sp)
 	lw $s0, 8($sp)
@@ -609,10 +610,11 @@ _TBCSoDX:
 	li $v0,4
 	la $a0,tbTBCSoDX
 	syscall
-	#kiem tra n < 0
+	#kiem tra n <= 0?
 	li $s0, 0 # s = 0
 	slt $t0, $a2,  $0
 	beq $t0, 1, _TBCSoDX.KetThuc
+	beq $a2, 0, _TBCSoDX.KetThuc
 	#khoi tao vong lap
 	li $t0, 0 # i = 0
 	li $s0, 0 # s = 0
@@ -628,7 +630,6 @@ _TBCSoDX.Lap:
 	
 	#Tang bien dem len
 	addi $t0,$t0,1
-	
 	#Tang dia chi mang
 	addi $a1,$a1,4
 	
@@ -642,7 +643,6 @@ _TBCSoDX.Cong:
 	
 	#Tang bien dem len
 	addi $t0,$t0,1
-	
 	#Tang dia chi mang
 	addi $a1,$a1,4
 	
@@ -650,18 +650,17 @@ _TBCSoDX.Cong:
 
 _TBCSoDX.Chia:
 	#Neu m = 0 thi xuat s = 0
-	beq $t1, 0, _TBCSoDX.KetThuc
+	beq $t1, 0, _TBCSoDX.XuatSoDX
 	
 	#nguoc lai thuc hien chia
 	div $s0, $t1
 	mflo $s0 #thuong
-	
-_TBCSoDX.KetThuc:
+_TBCSoDX.XuatSoDX:
 	#xuat ket qua
 	li $v0, 1
 	la $a0, ($s0)
 	syscall
-	
+_TBCSoDX.KetThuc:
 	#Restor thanh ghi
 	lw $ra,($sp)
 	lw $t0,4($sp)
@@ -754,16 +753,17 @@ _TimMax:
 	li $v0,4
 	la $a0,tbMax
 	syscall
-	#kiem tra n < 0
+	#kiem tra n <= 0?
 	li $s0, 0 # s = 0
 	slt $t0, $a2,  $0
 	beq $t0, 1, _TimMax.KetThuc
+	beq $a2, 0, _TimMax.KetThuc
 	#khoi tao vong lap
 	li $t0, 0 # i = 0
 	lw $t1, ($a1) #khoi tao Max tam la phan tu dau tien cua mang
 	
 _TimMax.Lap:
-	beq $t0, $a2, _TimMax.KetThuc
+	beq $t0, $a2, _TimMax.XuatMax
 	
 	lw $s0, ($a1)
 	slt $t2, $t1, $s0
@@ -771,29 +771,26 @@ _TimMax.Lap:
 	
 	#Tang bien dem len
 	addi $t0,$t0,1
-	
 	#Tang dia chi mang
 	addi $a1,$a1,4
-	
+
 	j _TimMax.Lap
 	
 _TimMax.Gan:
 	addi $t1, $s0, 0
-	
 	#Tang bien dem len va kiem tra i < n
 	addi $t0,$t0,1
-	
 	#Tang dia chi mang
 	addi $a1,$a1,4
 	
 	j _TimMax.Lap
-	
-_TimMax.KetThuc:
+_TimMax.XuatMax:
 	#xuat max
 	li $v0, 1
 	la $a0, ($t1)
 	syscall
-	
+_TimMax.KetThuc:
+	#Restore thanh ghi
 	lw $ra,($sp)
 	lw $t0,4($sp)
 	lw $t1,8($sp)
@@ -877,6 +874,10 @@ _Func_SSort:
 	la $a1, arr
 	lw $a2, n
 	jal _XuatMang
+	#endl
+	li $v0, 4
+	la $a0, endl
+	syscall
 	j XuatMenu
 	
 #Ham sap xep mang tang thep SSort.
@@ -943,7 +944,10 @@ _Func_BSort:
 	lw $a2, n
 	
 	jal _XuatMang	
-	
+	#endl
+	li $v0, 4
+	la $a0, endl
+	syscall
 	j XuatMenu
 	
 #Ham sap xep mang giam dan theo BSort.
