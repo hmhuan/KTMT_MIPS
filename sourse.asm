@@ -687,6 +687,10 @@ _KTDX:
 	#khoi tao vong lap
 	li $s1,	0 # bien s = 0 luu gia tri dao cua so
 	li $t0, 10 # t = 10 nhan voi 10
+	#Kiem tra $a0 < 0 ??
+	slt $t1, $a0, $0
+	beq $t1, 1, _KTDX.SoSanh
+	#$t2 la bien tam de chia
 	addi $t2, $a0, 0
 	
 _KTDX.Lap:
